@@ -1,0 +1,53 @@
+{
+  "name": "smart-mail-assistant",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "智能邮件助手 - AI摘要 / 任务归档 / 待办清单 / 日历提醒",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^3.6.0",
+    "dexie": "^4.0.11",
+    "imapflow": "^1.0.186",
+    "lucide-react": "^0.441.0",
+    "mailparser": "^3.7.2",
+    "nodemailer": "^9.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "react-window": "^1.8.10",
+    "tailwind-merge": "^2.5.2",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@types/crypto-js": "^4.2.2",
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^20.16.10",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-window": "^1.8.8",
+    "@vercel/node": "^3.2.25",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.0",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2"
+  }
+}

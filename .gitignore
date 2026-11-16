@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.local
+.env.*.local
+.vercel
+.DS_Store
+*.log
+
+# 本地敏感信息（邮箱凭据）
+测试邮箱.txt
+scripts/imap-probe.mjs
