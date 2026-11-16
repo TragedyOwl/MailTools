@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-surface-soft text-ink font-sans dark:bg-ink-charcoal dark:text-gray-100;
+    line-height: 1.5;
+  }
+
+  /* 滚动条美化 */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-300 dark:bg-gray-600;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+@layer components {
+  /* 输入框基础样式 */
+  .input-base {
+    @apply w-full rounded-lg border border-surface-border bg-white px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-muted focus:border-primary-500 focus:ring-2 focus:ring-primary-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-primary-900;
+  }
+
+  /* 卡片容器 */
+  .card {
+    @apply rounded-panel bg-white shadow-card dark:bg-gray-800 dark:shadow-none;
+  }
+
+  /* 胶囊按钮 */
+  .pill-button {
+    @apply inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors;
+  }
+
+  /* 富文本正文编辑区：空内容时显示占位符，粘贴的链接继承正文颜色 */
+  .compose-body:empty::before {
+    content: attr(data-placeholder);
+    @apply text-ink-muted pointer-events-none;
+  }
+  .compose-body a {
+    @apply text-primary-600 underline dark:text-primary-400;
+  }
+}
