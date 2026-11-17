@@ -9,6 +9,7 @@ AI 邮件摘要 · 任务自动归档 · 待办清单 · 日历提醒
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Electron](https://img.shields.io/badge/Desktop-Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vitest](https://img.shields.io/badge/Tested_with-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-贡献)
@@ -83,6 +84,29 @@ npm run dev
 
 > 开发模式下，`vite.config.ts` 会把 `api/` 与 `server/` 中的接口挂到 Vite 开发服务器上，因此本地不需要额外启动后端。
 
+## 🖥️ Windows 桌面版（Electron）
+
+除了浏览器版本，仓库还提供 Electron 桌面封装。桌面版启动时会在本机 `127.0.0.1` 上创建一个仅本地可访问的服务，复用 `server/` 中的 IMAP / SMTP / AI 逻辑并托管前端页面，因此**不需要另外部署 Vercel**。
+
+### 下载与运行
+
+- **从 Actions 下载**：打开 [Build Windows desktop](https://github.com/TragedyOwl/MailTools/actions/workflows/build-windows.yml)，点击 **Run workflow**，运行完成后在页面底部下载 `MailTools-windows-x64` 产物。
+- **从 Releases 下载**：推送 `v*` 标签后，工作流会自动构建并创建 GitHub Release，产物名为 `MailTools-<version>-windows-x64-portable.exe`。
+- **系统要求**：Windows 10 / 11 x64。
+- **免安装**：便携版双击即可运行。首次启动可能触发 Windows SmartScreen 提示，因为安装包未做代码签名，点击「更多信息 → 仍要运行」即可。
+
+桌面版的邮件、任务、待办、日程和配置保存在 `%APPDATA%\MailTools` 下；应用本身不会上传这些数据，卸载时请按需自行备份或清理该目录。
+
+### 本地构建
+
+```bash
+npm ci
+npm run dist:win    # 生成 release/MailTools-0.1.0-windows-x64-portable.exe
+npm run desktop     # 使用 Electron 直接启动已构建版本（需要图形界面）
+```
+
+> 当前发布目标为 Windows x64。代码本身可以在 macOS / Linux 上运行，但仓库暂未提供对应安装包。
+
 ## ⚙️ 配置
 
 ### 邮箱（IMAP / SMTP）
@@ -120,10 +144,14 @@ npm run dev
 
 | 命令 | 作用 |
 | --- | --- |
-| `npm run dev` | 启动本地开发服务器 |
+| `npm run dev` | 启动浏览器开发服务器 |
 | `npm run build` | TypeScript 类型检查 + Vite 生产构建 |
+| `npm run build:electron` | 打包 Electron 主进程（esbuild） |
+| `npm run build:desktop` | 构建前端 + Electron 主进程 |
+| `npm run desktop` | 构建并以 Electron 启动桌面版 |
+| `npm run dist:win` | 生成 Windows x64 便携版发布包 |
 | `npm run preview` | 本地预览生产构建 |
-| `npm test` | 运行 Vitest 单元测试 |
+| `npm test` | 运行 Vitest 单元测试（含桌面本地服务测试） |
 | `npm run lint` | ESLint 代码检查 |
 
 提交 PR 前建议至少执行：
@@ -169,8 +197,9 @@ flowchart LR
 | 邮件协议 | imapflow、mailparser、nodemailer |
 | AI | OpenAI 兼容接口，支持 SSE 流式输出 |
 | 日历 | date-fns 自研月/周/日视图 |
+| 桌面端 | Electron 45、esbuild、本地回环 HTTP 服务 |
 | 工程质量 | Vitest、ESLint、TypeScript 严格检查 |
-| 部署 | Vercel Serverless Functions |
+| 部署 | Vercel Serverless Functions / GitHub Actions + GitHub Releases |
 
 ### 目录结构
 
@@ -195,7 +224,15 @@ MailTools/
 │   ├── stores/           # Zustand 状态
 │   ├── types/            # TypeScript 类型
 │   └── utils/            # 解析、加密、日期、演示数据等工具
+├── electron/             # Electron 主进程与本地回环服务
+│   ├── main.ts           # 窗口、单实例、CSP 与导航安全
+│   └── localServer.ts    # 静态页面托管 + /api 路由复用
+├── scripts/              # 构建辅助脚本
+│   └── build-electron.mjs
+├── build/                # 桌面应用图标等打包资源
 ├── public/               # 静态资源
+├── .github/workflows/    # Windows 自动构建与 Release 发布
+├── electron-builder.yml  # Windows 便携版打包配置
 ├── vercel.json           # 接口超时与 SPA 路由重写
 └── vite.config.ts        # 构建、别名、开发接口挂载
 ```
@@ -213,9 +250,10 @@ MailTools/
 
 ## 🔒 隐私与安全
 
-- **数据留在本地**：邮件、任务、待办、日程存储在浏览器 IndexedDB，不使用后端数据库。
+- **数据留在本地**：邮件、任务、待办、日程存储在浏览器 IndexedDB，不使用后端数据库；桌面版保存在本机 `%APPDATA%\MailTools`。
 - **凭据加密**：邮箱密码与 AI API Key 使用 PBKDF2 派生密钥 + AES-256 加密后写入 LocalStorage，避免明文落盘。
-- **最小外发**：邮件内容仅在生成 AI 摘要时发送到你配置的 AI 接口；邮箱凭据仅在调用你部署的 Serverless 接口建立 IMAP/SMTP 连接时传输。
+- **最小外发**：邮件内容仅在生成 AI 摘要时发送到你配置的 AI 接口；邮箱凭据仅在调用你部署的 Serverless 接口（桌面版为本地回环服务）建立 IMAP/SMTP 连接时传输。
+- **本地回环**：桌面版的 HTTP 服务只监听 `127.0.0.1`，不向局域网或公网开放。
 - **无遥测**：项目不包含统计、埋点或第三方追踪脚本。
 - **日志脱敏**：敏感文本在日志中会按长度截断。
 
@@ -224,6 +262,8 @@ MailTools/
 ## 🌐 浏览器支持
 
 Chrome / Edge / Firefox / Safari 最近两个大版本，以及主流移动端浏览器。需要支持 IndexedDB 与 Notification API。
+
+桌面版基于 Electron 45，支持 Windows 10 / 11 x64。
 
 ## 🤝 贡献
 
