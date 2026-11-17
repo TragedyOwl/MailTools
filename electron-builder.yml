@@ -1,0 +1,31 @@
+appId: com.mailtools.desktop
+productName: MailTools
+copyright: Copyright © 2026 MailTools
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+  - "!**/*.map"
+  - "!node_modules/**/*"
+
+asar: true
+compression: maximum
+electronLanguages:
+  - zh-CN
+  - en-US
+
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.ico
+
+portable:
+  artifactName: MailTools-${version}-windows-x64-portable.${ext}
+  requestExecutionLevel: user

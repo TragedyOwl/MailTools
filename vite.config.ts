@@ -145,7 +145,7 @@ export default defineConfig(({ mode }): UserConfig & VitestUserConfig => {
     },
     test: {
       environment: 'node',
-      include: ['src/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'electron/**/*.test.ts'],
     },
   };
 });
